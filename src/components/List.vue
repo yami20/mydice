@@ -8,17 +8,18 @@
 
     <div id="edit">
       <form v-on:submit.prevent="onSubmit">
-        <b-field label="選択肢">
+        <b-field label="選択肢(1行=1候補)">
           <textarea v-model='currentItems' class="textarea" :rows="currentItems.split(/\n/).length" />
         </b-field>
         <b-button type="is-info" v-on:click.prevent="roll">抽選する</b-button>
+        <br>
+        <h4 v-bind:result="result" class="title is-4">抽選結果: {{ result }}</h4>
         <b-field label="保存するときのなまえ">
           <b-input v-model='currentName'></b-input>
         </b-field>
       </form>
       <b-button type="is-success" v-on:click.prevent="update">保存する</b-button>
       <b-button type="is-warning" v-on:click.prevent="unset">削除する</b-button>
-      <p v-bind:result='result'>{{ result }}</p>
     </div>
   </div>
 </template>
@@ -45,14 +46,12 @@ export default {
       localStorage.setItem('dices', JSON.stringify(this.dices))
     },
     roll() {
-      if (this.currentItems == undefined) { return }
+      if (this.currentItems === undefined) { return }
       var candidates = this.currentItems.split('\n');
       this.result = candidates[Math.floor(Math.random() * candidates.length)]
     },
     unset() {
       this.$delete(this.dices, this.currentName)
-      this.currentItems = undefined
-      this.currentName = undefined
       localStorage.setItem('dices', JSON.stringify(this.dices))
     },
     selectDice (name) {
